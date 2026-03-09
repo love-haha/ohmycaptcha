@@ -4,55 +4,60 @@
 
 **面向 flow2api 与类似集成场景的可自托管 YesCaptcha 风格验证码服务**
 
-[English README](README.md) · [在线文档](https://shenhao-stu.github.io/ohmycaptcha/) · [GitHub Pages](https://shenhao-stu.github.io/ohmycaptcha/)
+[English README](README.md) · [在线文档](https://shenhao-stu.github.io/ohmycaptcha/) · [Render 部署指南](https://shenhao-stu.github.io/ohmycaptcha/zh/deployment/render/) · [Hugging Face Spaces 指南](https://shenhao-stu.github.io/ohmycaptcha/zh/deployment/huggingface/)
+
+<p>
+  <img alt="Python" src="https://img.shields.io/badge/Python-3.10%2B-blue.svg">
+  <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-0.119-009688.svg">
+  <img alt="Playwright" src="https://img.shields.io/badge/Playwright-Chromium-2EAD33.svg">
+  <img alt="Docs" src="https://img.shields.io/badge/docs-MkDocs%20Material-526CFE.svg">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-black.svg">
+</p>
+
+![OhMyCaptcha Hero](docs/assets/ohmycaptcha-hero.svg)
 
 </div>
 
-<p align="center">
-  <img alt="Python" src="https://img.shields.io/badge/Python-3.10%2B-blue.svg">
-  <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-API-009688.svg">
-  <img alt="Playwright" src="https://img.shields.io/badge/Playwright-Chromium-2EAD33.svg">
-  <img alt="Docs" src="https://img.shields.io/badge/docs-MkDocs%20Material-526CFE.svg">
-</p>
-
-<p align="center">
-  <img src="docs/assets/hero.svg" alt="OhMyCaptcha Hero 图" width="100%">
-</p>
-
-OhMyCaptcha 是一个可自托管的验证码解决服务，为本仓库已经实现的任务类型提供 **YesCaptcha 风格异步 API**。它面向 **flow2api**、内部路由层以及其他依赖 `createTask` / `getTaskResult` 语义的系统。
-
-它主要由以下部分组成：
-
-- **FastAPI**：提供 HTTP API
-- **Playwright + Chromium**：生成 reCAPTCHA v3 token
-- **OpenAI-compatible 多模态接口**：分析图片验证码
-- **内存型异步任务管理器**：负责后台执行
+OhMyCaptcha 是一个高质量、可自托管的验证码解决服务，为本仓库已实现的任务类型提供 **YesCaptcha 风格异步 API**。它面向 **flow2api**、内部路由层，以及其他依赖 `createTask` / `getTaskResult` 语义的系统。
 
 ---
 
-## 项目概览
+## 为什么是 OhMyCaptcha
 
-<table>
-  <tr>
-    <td width="52%" valign="top">
+托管式打码平台很方便，但很多自托管工作流会更在意以下能力：
 
-### 为什么做这个项目？
+- **部署自主权** —— 服务运行在你自己的环境里
+- **模型路由灵活性** —— 可接入托管或自托管的 OpenAI-compatible 多模态后端
+- **求解流程透明** —— 浏览器执行路径可理解、可验证，而不是黑盒
+- **集成兼容性** —— 保持 YesCaptcha 风格 API，降低现有客户端接入成本
 
-YesCaptcha 等托管服务很方便，但很多自托管场景还需要：
+> 更准确地说，OhMyCaptcha 是一个**针对本仓库已实现任务类型的、自托管 YesCaptcha-compatible 服务**，而不是对所有商业打码平台能力的完整对标。
 
-- 更可控的部署方式
-- 更灵活的模型路由
-- 兼容本地或自托管多模态提供方
-- 更透明的浏览器求解流程
+---
 
-OhMyCaptcha 主要聚焦在这个方向。
+## 你能获得什么
 
-### 它不是什么？
+- **YesCaptcha 风格 API 接口**
+  - `POST /createTask`
+  - `POST /getTaskResult`
+  - `POST /getBalance`
+  - `GET /api/v1/health`
+- **reCAPTCHA v3 任务支持**
+  - `RecaptchaV3TaskProxyless`
+  - `RecaptchaV3TaskProxylessM1`
+  - `RecaptchaV3TaskProxylessM1S7`
+  - `RecaptchaV3TaskProxylessM1S9`
+- **图片验证码识别支持**
+  - `ImageToTextTask`
+- **FastAPI + Playwright 架构**，用于浏览器求解流程
+- **OpenAI-compatible 多模态集成**，用于图片验证码识别
+- **面向 Render 与 Hugging Face Spaces 的部署路径**
+- **双语 GitHub Pages 文档站**
+- **可本地复用的 skills**，适用于 Claude Code、OpenCode 与类似 agent 环境
 
-OhMyCaptcha 更准确的描述是：**针对本仓库已实现任务类型的、自托管 YesCaptcha-compatible 服务**，而不是对所有商业打码平台功能的完整对标。
+---
 
-</td>
-<td width="48%" valign="top">
+## 架构一览
 
 ```text
 Client / flow2api
@@ -74,29 +79,14 @@ solver       backend
  POST /getTaskResult
 ```
 
-</td>
-  </tr>
-</table>
+### 核心实现
+
+- **FastAPI** 提供 HTTP API
+- **Playwright + Chromium** 生成 reCAPTCHA v3 token
+- **OpenAI-compatible 多模态接口** 分析图片验证码
+- **内存型异步任务管理器** 负责后台执行
 
 ---
-
-## 功能特性
-
-- YesCaptcha 风格 API：
-  - `POST /createTask`
-  - `POST /getTaskResult`
-  - `POST /getBalance`
-  - `GET /api/v1/health`
-- 已实现的 reCAPTCHA v3 任务类型：
-  - `RecaptchaV3TaskProxyless`
-  - `RecaptchaV3TaskProxylessM1`
-  - `RecaptchaV3TaskProxylessM1S7`
-  - `RecaptchaV3TaskProxylessM1S9`
-- 已实现的多模态任务类型：
-  - `ImageToTextTask`
-- 支持对接托管或自托管的 OpenAI-compatible 多模态网关
-- 提供 Render-ready Docker 部署文件
-- 提供中英文 GitHub Pages 文档站
 
 ## 支持的任务类型
 
@@ -116,6 +106,8 @@ solver       backend
 - `ImageToTextTask`
 
 `ImageToTextTask` 采用受 Argus 启发的多模态识别提示词设计，会先将图片归一化到 1440×900 坐标空间，再把结构化识别结果序列化到 `solution.text` 中返回。
+
+---
 
 ## 快速开始
 
@@ -146,27 +138,14 @@ export BROWSER_TIMEOUT="30"
 python main.py
 ```
 
-### 4. 健康检查
+### 4. 进行健康检查
 
 ```bash
+curl http://localhost:8000/
 curl http://localhost:8000/api/v1/health
 ```
 
-## 配置项
-
-| 变量 | 说明 | 默认值 |
-| --- | --- | --- |
-| `CLIENT_KEY` | 客户端认证密钥，对应 `clientKey` | 未设置 |
-| `CAPTCHA_BASE_URL` | OpenAI-compatible API 基地址 | `https://your-openai-compatible-endpoint/v1` |
-| `CAPTCHA_API_KEY` | 模型接口密钥 | 未设置 |
-| `CAPTCHA_MODEL` | 强文本模型名称 | `gpt-5.4` |
-| `CAPTCHA_MULTIMODAL_MODEL` | 多模态模型名称 | `qwen3.5-2b` |
-| `CAPTCHA_RETRIES` | 模型或浏览器失败重试次数 | `3` |
-| `CAPTCHA_TIMEOUT` | 模型请求超时（秒） | `30` |
-| `BROWSER_HEADLESS` | Chromium 是否无头运行 | `true` |
-| `BROWSER_TIMEOUT` | 页面加载超时（秒） | `30` |
-| `SERVER_HOST` | 监听地址 | `0.0.0.0` |
-| `SERVER_PORT` | 监听端口 | `8000` |
+---
 
 ## API 示例
 
@@ -211,12 +190,46 @@ curl -X POST http://localhost:8000/createTask \
   }'
 ```
 
-## 部署指南
+---
 
-详细部署文档见文档站：
+## 配置项
+
+| 变量 | 说明 | 默认值 |
+| --- | --- | --- |
+| `CLIENT_KEY` | 客户端认证密钥，对应 `clientKey` | 未设置 |
+| `CAPTCHA_BASE_URL` | OpenAI-compatible API 基地址 | `https://your-openai-compatible-endpoint/v1` |
+| `CAPTCHA_API_KEY` | 模型接口密钥 | 未设置 |
+| `CAPTCHA_MODEL` | 强文本模型名称 | `gpt-5.4` |
+| `CAPTCHA_MULTIMODAL_MODEL` | 多模态模型名称 | `qwen3.5-2b` |
+| `CAPTCHA_RETRIES` | 模型或浏览器失败重试次数 | `3` |
+| `CAPTCHA_TIMEOUT` | 模型请求超时（秒） | `30` |
+| `BROWSER_HEADLESS` | Chromium 是否无头运行 | `true` |
+| `BROWSER_TIMEOUT` | 页面加载超时（秒） | `30` |
+| `SERVER_HOST` | 监听地址 | `0.0.0.0` |
+| `SERVER_PORT` | 监听端口 | `8000` |
+
+---
+
+## 部署
+
+完整部署文档见文档站：
 
 - [Render 部署](https://shenhao-stu.github.io/ohmycaptcha/zh/deployment/render/)
 - [Hugging Face Spaces 部署](https://shenhao-stu.github.io/ohmycaptcha/zh/deployment/huggingface/)
+- [完整文档](https://shenhao-stu.github.io/ohmycaptcha/)
+
+---
+
+## Skills
+
+本仓库在 `skills/` 目录下附带可复用的本地 skills：
+
+- `skills/ohmycaptcha/` — 用于部署、验证、集成和运维 OhMyCaptcha
+- `skills/ohmycaptcha-image/` — 用于生成 README 与文档所需的公开安全图片
+
+适用于 Claude Code、OpenCode、OpenClaw 风格工作流，以及类似的 agent 环境。
+
+---
 
 ## 验收状态
 
@@ -234,51 +247,26 @@ curl -X POST http://localhost:8000/createTask \
 
 本实现**不宣称**可以保证特定 score，也**不宣称**与商业打码平台所有功能完全一致。
 
+---
+
 ## 限制说明
 
-- 任务状态保存在**内存中**，并会在 TTL 到期后清理。
-- `minScore` 为兼容性字段，当前 solver **不会**依据它做分数控制。
-- `ImageToTextTask` 目前把结构化结果序列化后放在 `solution.text` 中返回，而不是更强类型化的 API 对象。
-- 实际稳定性取决于浏览器环境、目标站行为、IP 信誉以及模型/供应商质量。
+- 任务状态保存在**内存中**，并会在 TTL 到期后清理
+- `minScore` 为兼容性字段，当前 solver **不会**依据它做分数控制
+- `ImageToTextTask` 当前把结构化结果序列化后放在 `solution.text` 中返回
+- 实际稳定性取决于浏览器环境、目标站行为、IP 信誉以及模型或供应商质量
 
-## 仓库截图建议
-
-后续你可以把截图放到 `docs/assets/` 下，再在 README 中引用，例如：
-
-```md
-![API 健康检查](docs/assets/health.png)
-```
-
-这样可以保持公开 README 的美观，同时避免泄露任何运行时隐私信息。
-
-## 文档
-
-- 英文文档：`docs/`
-- 中文文档：`docs/zh/`
-- 在线文档：`https://shenhao-stu.github.io/ohmycaptcha/`
-
-## Agent Skills
-
-仓库还包含可安装的 agent skills：
-
-- `skills/ohmycaptcha/` — 用于部署、验证、集成和运维 OhMyCaptcha
-- `skills/ohmycaptcha-image/` — 用于生成 README 与文档所需的公开安全图片
-
-适用于 Claude Code、OpenCode 以及类似可以复用仓库内 skill 的 agent 环境。
+---
 
 ## 开发
 
-运行测试：
-
 ```bash
 pytest tests/
-```
-
-运行类型检查：
-
-```bash
 npx pyright
+python -m mkdocs build --strict
 ```
+
+---
 
 ## Star History
 
