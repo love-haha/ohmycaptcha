@@ -269,6 +269,18 @@ This service is validated against the public reCAPTCHA v3 score detector:
 
 ---
 
+## 📢 Disclaimer
+
+> **This project is intended for legitimate research, security testing, and educational purposes only.**
+
+- OhMyCaptcha is a self-hostable tool. You are solely responsible for how you deploy and use it.
+- CAPTCHA systems exist to protect services from abuse. **Do not use this tool to bypass CAPTCHAs on websites or services without explicit permission from the site owner.**
+- Unauthorized automated access to third-party services may violate their Terms of Service, and may be illegal under applicable laws (e.g., the Computer Fraud and Abuse Act, GDPR, or equivalent legislation in your jurisdiction).
+- The authors and contributors of this project **accept no liability** for any misuse, legal consequences, or damages arising from the use of this software.
+- By using this software, you agree that you are solely responsible for ensuring your usage complies with all relevant laws and terms of service.
+
+---
+
 ## 🔧 Development
 
 ```bash
@@ -288,3 +300,5 @@ python -m mkdocs build --strict
 ## 📄 License
 
 [MIT](LICENSE) — use freely, modify openly, deploy carefully.
+
+See [DISCLAIMER.md](DISCLAIMER.md) for full terms of use and liability limitations.
