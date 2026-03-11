@@ -1,10 +1,15 @@
-FROM python:3.11-slim
+# 使用官方 Playwright 镜像（包含 Python 3.11 和所有系统依赖）
+# 注意：v1.40.0 可以根据你 requirements.txt 里的 playwright 版本进行调整
+FROM mcr.microsoft.com/playwright/python:v1.40.0-jammy
 
 WORKDIR /app
 
+# 复制依赖文件
 COPY requirements.txt .
-RUN pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
-RUN playwright install --with-deps chromium
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 只需要安装浏览器二进制文件（不需要 --with-deps，因为镜像已经带了）
+RUN playwright install chromium
 
 COPY . .
 
